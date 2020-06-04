@@ -84,3 +84,4 @@ class MazeReader:
 if __name__ == "__main__":
     reader = MazeReader()
     maze_as_list_of_lines = reader.read_from_file('./inputs/entrada_1.txt')
+    print(maze_as_list_of_lines)
