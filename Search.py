@@ -116,7 +116,6 @@ class BestFirstSearch:
 
     def __init__(self, maze_graph):
         """ Class constructor
-
             Args:
                 maze_graph: Object representing a maze board in graph format. Check implementation in "Maze.py"
         """
@@ -136,7 +135,6 @@ class BestFirstSearch:
 
     def do_search(self):
         """ Runs Best-First Search
-
             Returns:
                 list[tuple(int, int)]: list of traversed vertex labels
         """
@@ -178,8 +176,14 @@ class BestFirstSearch:
                     # Check if it is in open queue
                     q = self.open.queue
                     to_insert = (self._calculate_f(path_vertex), path_vertex.id, path_vertex)
+                    already_in_open = False
 
-                    if to_insert not in q:
+                    for item in q:
+                        (f, vertex_id, parent) = item
+                        if f == to_insert[0] and vertex_id == to_insert[1]:
+                            already_in_open = True
+                            break
+                    if already_in_open == False:
                         self.open.put(to_insert)
 
         # Step 5: If target vertex was not found, the search was a failure
@@ -187,7 +191,6 @@ class BestFirstSearch:
 
     def _calculate_f(self, vertex):
         """ Private method that calculates F
-
             returns:
                 F: h 
         """

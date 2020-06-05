@@ -11,16 +11,16 @@ args = parser.parse_args()
 
 
 inputs_path = 'inputs'
-# algs = {"BFS": BreadthFirstSearch, "DFS": DepthFirstSearch, "AS": AStarSearch, "BestFS": BestFirstSearch}
-algs = {"BFS": BreadthFirstSearch, "DFS": DepthFirstSearch}
+algs = {"BFS": BreadthFirstSearch, "DFS": DepthFirstSearch, "AS": AStarSearch, "BestFS": BestFirstSearch}
+# algs = {"BFS": BreadthFirstSearch, "DFS": DepthFirstSearch}
 
 input_file_listage = [os.path.join(inputs_path, name) for name in os.listdir(inputs_path)]
 
 reader = MazeReader()
 
-num_repetitions = 100
+num_repetitions = 1000
 time_results = {alg_type: [] for alg_type in algs.keys()}
-
+maze_results = []
 
 
 for alg_type in algs.keys():
@@ -34,6 +34,11 @@ for alg_type in algs.keys():
             path = searcher.do_search()
         end = time.time()
         avg_time = (end - init) / num_repetitions
-        time_results[alg_type].append(avg_time)
+        result_obj = {"dim": (maze_as_graph.number_of_rows, maze_as_graph.number_of_columns), "avg_time": avg_time}
+        time_results[alg_type].append(result_obj)
 
-print(time_results)
+
+for alg in time_results:
+    print(alg)
+    for result in time_results[alg]:
+        print("{} (per execution, {} repetitions)".format(result, num_repetitions))
