@@ -20,7 +20,7 @@ reader = MazeReader()
 
 num_repetitions = 1000
 time_results = {alg_type: [] for alg_type in algs.keys()}
-maze_results = []
+maze_results = {alg_type: [] for alg_type in algs.keys()}
 
 
 for alg_type in algs.keys():
@@ -33,12 +33,23 @@ for alg_type in algs.keys():
         for i in range(num_repetitions):
             path = searcher.do_search()
         end = time.time()
+
         avg_time = (end - init) / num_repetitions
         result_obj = {"dim": (maze_as_graph.number_of_rows, maze_as_graph.number_of_columns), "avg_time": avg_time}
         time_results[alg_type].append(result_obj)
 
+        maze_as_graph.add_solution(path)
+        maze_solution_obj = {"dim": (maze_as_graph.number_of_rows, maze_as_graph.number_of_columns), "maze": maze_as_graph}
+        maze_results[alg_type].append(maze_solution_obj)
 
 for alg in time_results:
     print(alg)
     for result in time_results[alg]:
         print("{} (per execution, {} repetitions)".format(result, num_repetitions))
+
+
+if args.visualize:
+    for alg in maze_results:
+        for result in maze_results[alg]:
+            if result['dim'][0] <= 80 and result['dim'][1] <= 80:
+                result['maze'].print_maze()
