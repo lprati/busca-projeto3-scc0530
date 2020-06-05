@@ -1,3 +1,7 @@
+import curses
+import time
+from BreadthFirst import BreadthFirstSearch as BFS
+
 class MazeVertex:
     """ Class used to represent each free-to-walk position in the maze board
     and it's connections as graph vertexes with adjacences list.
@@ -179,7 +183,48 @@ class MazeGraph:
         vertex_id = self.vertex_id_label_mapping[vertex_label]
         return self.vertexes_list[vertex_id].get_adjacence_list()
 
+    def add_solution(self, list_of_positions):
+        self.solution_path = list_of_positions
 
+    def print_maze(self):
+        curses.wrapper(self._wraped_print_maze)
+
+    def _wraped_print_maze(self, stdscr):
+    
+        start_pos = self.vertexes_list[self.root_id].get_label()
+        end_pos = self.vertexes_list[self.target_id].get_label()
+
+        curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK)     # Walls
+        curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_WHITE)     # Paths
+        curses.init_pair(3, curses.COLOR_WHITE, curses.COLOR_BLUE)      # Start
+        curses.init_pair(4, curses.COLOR_WHITE, curses.COLOR_RED)       # End
+        curses.init_pair(5, curses.COLOR_WHITE, curses.COLOR_YELLOW)    # Visited
+        
+        stdscr.clear()
+        stdscr.nodelay(1)
+
+        for line_index, line in zip(range(len(self.maze_text_info)),self.maze_text_info):
+            for column_index, column in zip(range(len(line)),line):
+                if column == '-':
+                    color = curses.color_pair(1)
+                elif column == '*':
+                    color = curses.color_pair(2)
+                elif column == '#':
+                    color = curses.color_pair(3)
+                elif column == '$':
+                    color = curses.color_pair(4) 
+                stdscr.addstr(line_index, column_index, ' ', color)
+        stdscr.refresh()
+        time.sleep(1)
+
+        for walked in self.solution_path:
+            stdscr.addstr(walked[0], walked[1], ' ', curses.color_pair(5))
+            stdscr.addstr(start_pos[0], start_pos[1], ' ', curses.color_pair(3))
+            stdscr.addstr(end_pos[0], end_pos[1], ' ', curses.color_pair(4))
+            stdscr.refresh()
+            time.sleep(0.1)
+        stdscr.nodelay(0)
+        stdscr.getch()
 
 class MazeReader:
     """ A class to read mazes from input files into a format the MazeGraph class can parse.
@@ -218,6 +263,7 @@ if __name__ == "__main__":
     reader = MazeReader()
     maze_as_list_of_lines = reader.read_from_file('./inputs/entrada_1.txt')
     maze_as_graph = MazeGraph(maze_as_list_of_lines)
-    
-    for vertex in maze_as_graph.vertexes_list:
-        print("{}: {}".format(vertex.get_id(), vertex.get_adjacence_list()))
+    path = BFS(maze_as_graph).do_search()
+    maze_as_graph.add_solution(path)
+
+    maze_as_graph.print_maze()
