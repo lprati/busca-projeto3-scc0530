@@ -11,7 +11,7 @@ class BreadthFirstSearch:
         self.queue = []
         self.found = False
 
-    def run_search(self):
+    def do_search(self):
         """ Runs BFS search
 
         Returns:
