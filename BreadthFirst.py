@@ -27,7 +27,6 @@ class BreadthFirstSearch:
 
             for index in self.maze_graph.get_vertex_adjacence_by_id(v):
                 if index == self.maze_graph.target_id:
-                    print("\nFound!")
                     self.found=True
                 if self.visited[index] == False:
                     self.queue.append(index)
