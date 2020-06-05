@@ -27,11 +27,12 @@ for alg_type in algs.keys():
     for input_file in input_file_listage:
         maze_as_lines = reader.read_from_file(input_file)
         maze_as_graph = MazeGraph(maze_as_lines)
-        searcher = algs[alg_type](maze_as_graph)
         
         init = time.time()
         for i in range(num_repetitions):
+            searcher = algs[alg_type](maze_as_graph)
             path = searcher.do_search()
+            del searcher
         end = time.time()
 
         avg_time = (end - init) / num_repetitions
@@ -43,6 +44,7 @@ for alg_type in algs.keys():
         maze_results[alg_type].append(maze_solution_obj)
 
 for alg in time_results:
+    time_results[alg] = sorted(time_results[alg], key=lambda x : x['avg_time'])
     print(alg)
     for result in time_results[alg]:
         print("{} (per execution, {} repetitions)".format(result, num_repetitions))
@@ -50,6 +52,9 @@ for alg in time_results:
 
 if args.visualize:
     for alg in maze_results:
+        maze_results[alg] = sorted(maze_results[alg], key=lambda x: x['dim'][1])
+        print("VISUALIZING SEARCH FOR {} ALGORITHM".format(alg))
+        time.sleep(3)
         for result in maze_results[alg]:
             if result['dim'][0] <= 80 and result['dim'][1] <= 80:
                 result['maze'].print_maze()

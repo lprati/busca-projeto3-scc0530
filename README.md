@@ -5,3 +5,8 @@ Repositorio contendo o codigo fonte para o projeto 3 da disciplina SCC0530 - Int
 O programa foi desenvolvido utilizando Python 3, no ambiente Linux. Assumindo que o programa python3 esteja instalado, no terminal, basta navegar até a pasta-raiz do projeto e executar o seguinte comando:
 	```python3 main.py```
 A saída do programa é a média de tempo executado por cada arquivo de entrada, por cada algoritmo.
+
+Para executar a visualizacao dos caminhos gerados por cada algoritmo de busca:
+	```	python3 main.py --visualize	```
+
+Para que a visualizacao funcione corretamente, seu terminal precisa ter ao menos 80 linhas e 80 colunas. Caso contrario, o programa apresentara erro na exibicao.

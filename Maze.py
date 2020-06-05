@@ -215,14 +215,14 @@ class MazeGraph:
                     color = curses.color_pair(4) 
                 stdscr.addstr(line_index, column_index, ' ', color)
         stdscr.refresh()
-        time.sleep(1)
+        time.sleep(0.5)
 
         for walked in self.solution_path:
             stdscr.addstr(walked[0], walked[1], ' ', curses.color_pair(5))
             stdscr.addstr(start_pos[0], start_pos[1], ' ', curses.color_pair(3))
             stdscr.addstr(end_pos[0], end_pos[1], ' ', curses.color_pair(4))
             stdscr.refresh()
-            time.sleep(0.1)
+            time.sleep(0.01)
         stdscr.nodelay(0)
         stdscr.getch()
 
