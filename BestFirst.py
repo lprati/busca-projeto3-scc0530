@@ -36,6 +36,7 @@ class BestFirstSearch:
         first = self.maze_graph.vertexes_list[self.maze_graph.root_id]
         first_vertex = MazeVertex(first.id, first.label, None, None)
         first_vertex.adjacence_list = first.get_adjacence_list()
+        first_vertex.h = first.h
         self.open.put((self._calculate_f(first_vertex), first_vertex.id, first_vertex))
 
         # Step 1: 
