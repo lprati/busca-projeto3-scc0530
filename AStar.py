@@ -4,7 +4,7 @@ from queue import PriorityQueue
 
 class BestFirstSearch:
     """ Class representing a Best-First search algorithm
-	"""
+    """
 
     def __init__(self, maze_graph):
         """ Class constructor
@@ -26,16 +26,18 @@ class BestFirstSearch:
             diff_y = (target_vertex_column - vertex_column) ** 2
             current_vertex.h = math.ceil(math.sqrt(diff_x + diff_y))
 
+            # We have a g variable in A* algorithm, that helps us calculate the best choice
+            # between neighbors of a given vertex
+            current_vertex.g = 0
+
     def do_search(self):
-        """ Runs Best-First Search
+        """ Runs A* Search.
 
             Returns:
                 list[tuple(int, int)]: list of traversed vertex labels
         """
 
-        first = self.maze_graph.vertexes_list[self.maze_graph.root_id]
-        first_vertex = MazeVertex(first.id, first.label, None, None)
-        first_vertex.adjacence_list = first.get_adjacence_list()
+        first_vertex = self.maze_graph.vertexes_list[self.maze_graph.root_id]
         self.open.put((self._calculate_f(first_vertex), first_vertex.id, first_vertex))
 
         # Step 1: 
@@ -44,35 +46,21 @@ class BestFirstSearch:
             # Step 2: Add current vertex to closed vertexes list 
             self.closed.append(current_vertex.get_label())
 
-            # Step 3: Found way out
+            # Step 2: Found way out
             if current_vertex.id == self.maze_graph.target_id:
                 print("\nFound!")
-
-                #Step 3.1: Traverse path
-                current_path = current_vertex
-                while current_path != None:
-                    self.path.append(current_path.get_label())
-                    current_path = current_path.parent
-
-                self.path.reverse()                    
-                return self.path
+                return self.closed
 
             # Step 4: Didn't find way out. Looks in adjacences
             for neighbor_id in current_vertex.get_adjacence_list():
-                neighbor = self.maze_graph.vertexes_list[neighbor_id]
-                path_vertex = MazeVertex(neighbor.id, neighbor.label, None, current_vertex)
-                path_vertex.adjacence_list = neighbor.get_adjacence_list()
-                path_vertex.parent = current_vertex
-                path_vertex.h = neighbor.h
+                neighbor_vertex = self.maze_graph.vertexes_list[neighbor_id]
 
-                # Step 4.1: Add neighbor vertex in open vertexes queue
-                if path_vertex.get_label() not in self.closed:
-                    # Check if it is in open queue
-                    q = self.open.queue
-                    to_insert = (self._calculate_f(path_vertex), path_vertex.id, path_vertex)
+                # Step 4.1: New g for neighbor vertex
+                neighbor_vertex.g = current_vertex.g + 1
 
-                    if to_insert not in q:
-                        self.open.put(to_insert)
+                # Step 4.2: Add neighbor vertex in open vertexes queue
+                if neighbor_vertex.get_label() not in self.closed:
+                    self.open.put((self._calculate_f(neighbor_vertex), neighbor_vertex.id, neighbor_vertex))
 
         # Step 5: If target vertex was not found, the search was a failure
         return None
@@ -81,10 +69,9 @@ class BestFirstSearch:
         """ Private method that calculates F
 
             returns:
-                F: h 
+                F: h + g 
         """
-        return vertex.h
-
+        return vertex.h + vertex.g
 
     def print_visited_vertexes(self):
         """ Prints all id's of the vertexes representing the way out of the maze 

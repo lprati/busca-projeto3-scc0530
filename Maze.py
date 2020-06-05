@@ -3,7 +3,7 @@ class MazeVertex:
     and it's connections as graph vertexes with adjacences list.
     """
 
-    def __init__(self, id, label, adjacence_list=[]):
+    def __init__(self, id, label, adjacence_list=[], parent=None):
         """ Class constructor
 
         Args:
@@ -14,6 +14,7 @@ class MazeVertex:
         self.id = id
         self.label = label
         self.adjacence_list = []
+        self.parent = parent # Parent of a given path - used in Best-First Search and A* Search
         self.h = None # Value used for heuristic informed searches - Best-First Search and A* Search
         self.g = None # Value used for heuristic informed search - A* Search
     
