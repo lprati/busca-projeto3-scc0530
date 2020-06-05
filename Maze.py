@@ -14,6 +14,8 @@ class MazeVertex:
         self.id = id
         self.label = label
         self.adjacence_list = []
+        self.h = None # Value used for heuristic informed searches - Best-First Search and A* Search
+        self.g = None # Value used for heuristic informed search - A* Search
     
     def add_adjacence(self, neighbour_id):
         """ Method to add the id of a adjacent vertex to this vertex adjacence list
