@@ -1,6 +1,5 @@
 import curses
 import time
-from BreadthFirst import BreadthFirstSearch as BFS
 
 class MazeVertex:
     """ Class used to represent each free-to-walk position in the maze board
@@ -258,13 +257,3 @@ class MazeReader:
             maze_board.append(maze_line)
 
         return maze_board
-
-
-if __name__ == "__main__":
-    reader = MazeReader()
-    maze_as_list_of_lines = reader.read_from_file('./inputs/entrada_1.txt')
-    maze_as_graph = MazeGraph(maze_as_list_of_lines)
-    path = BFS(maze_as_graph).do_search()
-    maze_as_graph.add_solution(path)
-
-    maze_as_graph.print_maze()
