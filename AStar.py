@@ -4,7 +4,7 @@ from queue import PriorityQueue
 
 class BestFirstSearch:
     """ Class representing a Best-First search algorithm
-	"""
+    """
 
     def __init__(self, maze_graph):
         """ Class constructor
@@ -26,6 +26,10 @@ class BestFirstSearch:
             diff_y = (target_vertex_column - vertex_column) ** 2
             current_vertex.h = math.ceil(math.sqrt(diff_x + diff_y))
 
+            # We have a g variable in A* algorithm, that helps us calculate the best choice
+            # between neighbors of a given vertex
+            current_vertex.g = 0
+
     def do_search(self):
         """ Runs Best-First Search
 
@@ -37,6 +41,7 @@ class BestFirstSearch:
         first_vertex = MazeVertex(first.id, first.label, None, None)
         first_vertex.adjacence_list = first.get_adjacence_list()
         first_vertex.h = first.h
+        first_vertex.g = first.g
         self.open.put((self._calculate_f(first_vertex), first_vertex.id, first_vertex))
 
         # Step 1: 
@@ -65,14 +70,21 @@ class BestFirstSearch:
                 path_vertex.adjacence_list = neighbor.get_adjacence_list()
                 path_vertex.parent = current_vertex
                 path_vertex.h = neighbor.h
+                path_vertex.g = current_vertex.g + 1
 
                 # Step 4.1: Add neighbor vertex in open vertexes queue
                 if path_vertex.get_label() not in self.closed:
                     # Check if it is in open queue
                     q = self.open.queue
                     to_insert = (self._calculate_f(path_vertex), path_vertex.id, path_vertex)
+                    already_in_open = False
 
-                    if to_insert not in q:
+                    for item in q:
+                        (f, vertex_id, parent) = item
+                        if f == to_insert[0] and vertex_id == to_insert[1]:
+                            already_in_open = True
+                            break
+                    if already_in_open == False:
                         self.open.put(to_insert)
 
         # Step 5: If target vertex was not found, the search was a failure
@@ -82,9 +94,9 @@ class BestFirstSearch:
         """ Private method that calculates F
 
             returns:
-                F: h 
+                F: h + g
         """
-        return vertex.h
+        return vertex.h + vertex.g
 
 
     def print_visited_vertexes(self):

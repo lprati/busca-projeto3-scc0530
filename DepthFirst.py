@@ -17,6 +17,9 @@ class DepthFirstSearch:
     def do_search(self):
         """ Method that starts a depth-first search over a a graph that represents a maze board game.
             The objective is to find the exit of the maze, given the start position and the exit position.
+
+            Returns:
+                list[tuple(int, int)]: List of traversed vertexes labels
         """
         first_vertex = self.maze_graph.vertexes_list[self.maze_graph.root_id]
 
